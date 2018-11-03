@@ -1,32 +1,38 @@
-<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TriviaGame</title>
+    <meta name="example timer" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="../TriviaGame/assets/css/reset.css"> -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+</head>
 
-<html lang="en">
-	<head>
-		<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-		<script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
-		<title>Trivia Game</title>
-	</head>
-	<body>
-		<h1>Goofy's Mystery Tour Trivia</h1>
-		<img src="assets/images/Goofy.jpg">
-		<div class="timer"></div>
-		<div class="question"></div>
-		<div class="answers">
-			<div>
-				<button class="answerchoice" id="buttonA"><h4>A</h4></button>
-			</div>
-			<div>
-				<button class="answerchoice" id="buttonB"><h4>B</h4></button>
-			</div>
-			<div>
-				<button class="answerchoice" id="buttonC"><h4>C</h4></button>
-			</div>
-			<div>
-				<button class="answerchoice" id="buttonD"><h4>D</h4></button>
-			</div>
-		</div>
-
-		<script src="assets/javascript/app.js"></script>
-
-	</body>
-</html>
+<body>
+  <div id="wrapper">
+    <div id="gradient">
+      <div class="container">
+        <section class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="jumbotron animated zoomIn">
+              <h1>Adventure Trivia!</h1>
+              <h5 class="timeRemaining"></h5>
+              <h3 class="question questionHeader"></h3>
+              <div class="answers"></div>
+              <p class="start-button text-center animated zoomInDown">
+                <a class="btn btn-primary btn-lg startButton animated pulse infinite" href="#" role="button">
+                  <span class="glyphicon glyphicon-off"></span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <!-- local JS file link -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="assets/javascript/app.js"></script>
+</body>

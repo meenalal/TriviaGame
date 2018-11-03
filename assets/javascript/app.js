@@ -1,328 +1,164 @@
-$(document).ready(function() {
-	var index = 0;
-	var countdownTimer = {
-		time : 30,
-		reset: function() {
-			this.time = 30;
-			$('.timer').html('<h3>' + this.time + ' seconds remaining</h3>');
-		},
-		start: function() {
-			counter = setInterval(countdownTimer.count, 1000);	
-		},
-		stop: function() {
-			clearInterval(counter);
-		},
-		count: function() {
-				countdownTimer.time--;
-				console.log(countdownTimer.time);
-//				$('.timer').html(countdownTimer.time);
-			if (countdownTimer.time >= 0) {
-				$('.timer').html('<h3>' + countdownTimer.time + ' seconds remaining</h3>');
-			}
-			else {
-				index++;
-				answerWrong();
-				countdownTimer.reset();
-				if (index < questionArray.length) {
-					loadQuestion(index);
-				} else {
-					$(".answerchoice").hide();
-					showScore();
-				}
-			}
-		}
-	};
-/*
-	var trivia = {
-		questions: ['Who was the host for Kitchen Kabaret?',
-								'Who starred in the title role of Condorman?',
-								'In Captain EO, what is the name of the elephant like alien?',
-								'The 1980\'s were big for new personal computer introductions. Which of the following computers was introduced in 1980?',
-								'What country was welcomed into the World Showcase at EPCOT Center in 1984?',
-								'In 1981 a Disney constructed WED-Way People Mover opened at which airport?',
-								'What school is attended in the Disney Channel Series, Girl Meets World?',
-								'Which Walt Disney World location opened on the same day as the Disney-MGM Studios theme park on May 1, 1989?',
-								'Which of the following films is NOT part of the Walt Disney Studios Silly Symphonies?',
-								'Which wartime activity did the Walt Disney Studios partake in to support the American war effort?'],
-		q1: ['A. Fud Wrapper',
-				 'B. Cookie Ann Milk',
-				 'C. Bonnie Appetit',
-				 'D. Cherry Ontop'],
-		q2: ['A. Zac Efron',
-				 'B. Michael Crawford',
-				 'C. Billy Crystal',
-				 'D. Michael Keaton'],
-		q3: ['A. Trunks',
-				 'B. Hooter',
-				 'C. Elle',
-				 'D. Odie'],
-		q4: ['A. Sinclair ZX80',
-				 'B. IBM PC',
-				 'C. Commodore 64',
-				 'D. Atari 2600'],
-		q5: ['A. Norway',
-				 'B. Morocco',
-				 'C. France',
-				 'D. Japan'],
-		q6: ['A. Houston Intercontinental Airport',
-				 'B. Orlando International Airport',
-				 'C. Atlanta International Airport',
-				 'D. Dallas/Ft. Worth International Airport'],
-		q7: ['A. Vintage High School',
-				 'B. Peyton Middle School',
-				 'C. John Quincy Adams Middle School',
-				 'D. Washington High School'],
-		q8: ['A. Typhoon Lagoon',
-				 'B. Pleasure Island',
-				 'C. Both A & B',
-				 'D. None of the above'],
-		q9: ['A. The Night Before Christmas',
-				 'B. Three Little Pigs',
-				 'C. The Old Mill',
-				 'D. The Gallopin\' Gaucho'],
-		q10: ['A. Recycling used film footage',
-				  'B. Designing US Army & US Navy insignia',
-				  'C. Hosted a Studio Victory Garden where employees grew food for their families',
-				  'D. Forced employees to carpool by closing parking lots to non-carpool cars']		 						
-	}
-*/
-var correct = 0;
-var wrong = 0;
-var q1 = {
-	question : 'Who was the host for Kitchen Kabaret?',
-	possibleAnswers : ['A. Fud Wrapper',
-				 'B. Cookie Ann Milk',
-				 'C. Bonnie Appetit',
-				 'D. Cherry Ontop'],
-	flags : [false, false, true, false],
-	answer : 'C. Bonnie Appetit'
-};
+$(document).ready(function () {
+    // ----------------------------TRIVIA GAME----------------------------
 
-var q2 = {
-	question: 'Who starred in the title role of Condorman?',
-	possibleAnswers: ['A. Zac Efron',
-				 'B. Michael Crawford',
-				 'C. Billy Crystal',
-				 'D. Michael Keaton'],
-	flags : [false, true, false, false],
-	answer : 'B. Michael Crawford'
-};
+    var correctAnswers = 0;
+    var incorrectAnswers = 0;
+    var unansweredQuestions = 0;
+    var timeRemaining = 16;
+    var intervalID;
+    var indexQandA = 0; //index to load a different question each round without the game reset or screen refresh
+    var answered = false; //variable to stop the timer if user has clicked an answer
+    var correct;
+    var triviaGame = [{
+        question: "Making Bacon, and I put it in a Pancake. What's it gonna make ?",
+        answer: ["A Goldendoole", "An Artichoke", "Bacon Waffles", "Bacon Pancakes"],
+        correct: "3",
+        image: ("assets/images/bacon.gif")
+    }, {
+        question: "Babies are most like which of the following?",
+        answer: ["Dan Marino", "Drunk Adults", "Ace Ventura", "Dinosaurs"],
+        correct: "1",
+        image: ("assets/images/baby.gif")
+    }, {
+        question: "What does the Hubble Space Telescope do?",
+        answer: ["Take Pix of the Cosmos for Memes", "Grow Basil", "Think Deep Thoughts", "Sing Songs"],
+        correct: "0",
+        image: ("assets/images/hubble.gif")
+    }, {
+        question: "What is the Answer to Life the Universe and Everything?",
+        answer: ["Memes", "To Live a Good Life", "42", "Cloud Eggs"],
+        correct: "2",
+        image: ("assets/images/deepThoughts.gif")
+    }, {
+        question: "When Hippos are upset, their sweat turns: ",
+        answer: ["Red", "Black", "Green", "Clear"],
+        correct: "0",
+        image: ("assets/images/hippo.gif")
+    }, {
+        question: "Banging your Head Against a wall burns how many calories an hour?",
+        answer: ["10", "150", "25", "425"],
+        correct: "1",
+        image: ("assets/images/bang-head-on-wall.gif")
+    }, {
+        question: "What is Lionel Richie's MOST Greatest Song?",
+        answer: ["All Night Long", "Deep Into the Night", "Carrabba Fiesta Forever", "Prince, formerly known as The Artist, formerly known as Prince"],
+        correct: "0",
+        image: ("assets/images/Lionel-Richie.gif")
+    }, {
+        question: "What is your quest?",
+        answer: ["You seek the Holy Grail", "Blue, No...", "The airspeed of an unladen swallow", "I don't know that!"],
+        correct: "2",
+        image: ("assets/images/quest.gif")
+    }];
 
-var q3 = {
-	question : 'In Captain EO, what is the name of the elephant like alien?',
-	possibleAnswers : ['A. Trunks',
-				 'B. Hooter',
-				 'C. Elle',
-				 'D. Odie'],
-	flags : [false, true, false, false],
-	answer : 'B. Hooter'
-};
-
-var q4 = {
-	question : 'The 1980\'s were big for new personal computer introductions. Which of the following computers was introduced in 1980?',
-	possibleAnswers : ['A. Sinclair ZX80',
-				 'B. IBM PC',
-				 'C. Commodore 64',
-				 'D. Atari 2600'],
-	flags : [true, false, false, false],
-	answer : 'A. Sinclair ZX80'
-};
-
-var q5 = {
-	question : 'What country was welcomed into the World Showcase at EPCOT Center in 1984?',
-	possibleAnswers : ['A. Norway',
-				 'B. Morocco',
-				 'C. France',
-				 'D. Japan'],
-	flags : [false, true, false, false],
-	answer : 'B. Morocco'
-};
-
-var q6 = {
-	question : 'In 1981 a Disney constructed WED-Way People Mover opened at which airport?',
-	possibleAnswers : ['A. Houston Intercontinental Airport',
-				 'B. Orlando International Airport',
-				 'C. Atlanta International Airport',
-				 'D. Dallas/Ft. Worth International Airport'],
-	flags : [true, false, false, false],
-	answer : 'A. Houston Intercontinental Airport'
-};
-
-var q7 = {
-	question : 'What school is attended in the Disney Channel Series, Girl Meets World?',
-	possibleAnswers : ['A. Vintage High School',
-				 'B. Peyton Middle School',
-				 'C. John Quincy Adams Middle School',
-				 'D. Washington High School'],
-	flags : [false, false, true, false],
-	answer : 'C. John Quincy Adams Middle School'
-};
-
-var q8 = {
-	question : 'Which Walt Disney World location opened on the same day as the Disney-MGM Studios theme park on May 1, 1989?',
-	possibleAnswers : ['A. Typhoon Lagoon',
-				 'B. Pleasure Island',
-				 'C. Both A & B',
-				 'D. None of the above'],
-	flags : [false, true, false, false],
-	answer : 'B. Pleasure Island'
-};
-
-var q9 = {
-	question : 'Which of the following films is NOT part of the Walt Disney Studios Silly Symphonies?',
-	possibleAnswers : ['A. The Night Before Christmas',
-				 'B. Three Little Pigs',
-				 'C. The Old Mill',
-				 'D. The Gallopin\' Gaucho'],
-	flags : [false, false, false, true],
-	answer : 'D. The Gallopin\' Gaucho'
-};
-
-var q10 = {
-	question : 'Which wartime activity did the Walt Disney Studios partake in to support the American war effort?',
-	possibleAnswers : ['A. Recycling used film footage',
-				  'B. Designing US Army & US Navy insignia',
-				  'C. Hosted a Studio Victory Garden where employees grew food for their families',
-				  'D. Forced employees to carpool by closing parking lots to non-carpool cars'],
-	flags : [false, true, false, false],
-	answer : 'B. Designing US Army & US Navy insignia'
-}
-
-var questionArray = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10];
-
-function loadQuestion(questionSelection) {
-	console.log(questionSelection);
-	countdownTimer.reset();
-  $(".question").html("<h3>" + questionArray[questionSelection].question + "</h3>");
-  $("#buttonA").text(questionArray[questionSelection].possibleAnswers[0]).show();
-  $("#buttonB").text(questionArray[questionSelection].possibleAnswers[1]).show();
-  $("#buttonC").text(questionArray[questionSelection].possibleAnswers[2]).show();
-  $("#buttonD").text(questionArray[questionSelection].possibleAnswers[3]).show();
-//  getAnswer();  
-//  nextQuestion(index);
-}
-
-//function nextQuestion() {
-//	index = index++;
-//	console.log(index);
-//}
-
-function setup() {
-	index = 0;
-	$('.question').append('<button id="startButton">Start</button>');
-	$('#startButton').on('click', function() {
-		$(this).hide();
-		countdownTimer.start();
-	 	loadQuestion(index);
-	});
-}		
-
-function getAnswer() {
-
-//  nextQuestion();
-	$('.answerchoice').on('click', function() {
-	  console.log('alert', index);
-		index++;
-		console.log('click', index);
-		$(".question").text('');
-		$("#buttonA").text('');
-		$("#buttonB").text('');
-		$("#buttonC").text('');
-		$("#buttonD").text('');
-		loadQuestion();
-	})
-}
-
-function answerCorrect() {
-	correct++;
-	alert("Correct!");
-	console.log("correct");
-}
-
-function answerWrong() {
-	wrong++;
-	alert("Incorrect!");
-	console.log("wrong");
-}
-
-function showScore() {
-	$('.question').empty();
-	$('.question').append("<h2><p>" + correct + " correct</p></h2>");
-	$('.question').append("<h2><p>" + wrong + " incorrect</p></h2>");
-	countdownTimer.stop();
-	$('.timer').empty();
-
-}
-//		for (var i=0; i<questionArray.length; i++) {
-//			$('.question').append('<p>'+questionArray[i].question+'</p>');
-//			for (var j=0; j<questionArray[i].possibleAnswers.length; j++) {
-//				$('.answers').append('<span><button id="possibleAnswer">' + questionArray[i].possibleAnswers[j]+ '</button></span>');
-//			}
-//			$('#possibleAnswers').on('click', function() {
+    // ------------- FUNCTION DECLARATIONS ----------------------------
 
 
-//		console.log("click");
-//		countdownTimer.start();
-//		for (var i = 0; i < questionArray.length; i++) {
-//			console.log(i);
+    function startGame() {
+        console.log("game has begun");
+        $('.start-button').remove();
+        correctAnswers = 0;
+        incorrectAnswers = 0;
+        unansweredQuestions = 0;
+        loadQandA();
+    }
 
-//			$('.timer').html('<h3>'+countdownTimer.time + ' seconds remaining</h3>');
-//			$('.question').html(questionArray[i].question);
-//			while (countdownTimer != 0) {
+    function loadQandA() {
+        answered = false; // will allow timeRemaining to be pushed back to <h5> after round reset....else statement in function timer()
+        timeRemaining = 16;
+        intervalID = setInterval(timer, 1000);
+        if (answered === false) {
+            timer();
+        }
+        correct = triviaGame[indexQandA].correct;
+        var question = triviaGame[indexQandA].question;
+        $('.question').html(question);
+        for (var i = 0; i < 4; i++) {
+            var answer = triviaGame[indexQandA].answer[i];
+            $('.answers').append('<h4 class= answersAll id=' + i + '>' + answer + '</h4>');
+        }
 
-//			}
-		
-//	});
-//	$('#startButton').click(countdownTimer.start);
+        $("h4").click(function () {
+            var id = $(this).attr('id');
+            if (id === correct) {
+                answered = true; // stops the timer
+                $('.question').text("THE ANSWER IS: " + triviaGame[indexQandA].answer[correct]);
+                correctAnswer();
+            } else {
+                answered = true; //stops the timer
+                $('.question').text("YOU CHOSE: " + triviaGame[indexQandA].answer[id] + ".....HOWEVER THE ANSWER IS: " + triviaGame[indexQandA].answer[correct]);
+                incorrectAnswer();
+            }
+        });
+    }
 
-//}
-setup();
-$('.answerchoice').on('click', function() {
- console.log($(this));
- if(this.id == 'buttonA') {
- 	var answerChosen = 'A';
- } else if(this.id == 'buttonB') {
- 	answerChosen = 'B';
- } else if (this.id == 'buttonC') {
- 	answerChosen = 'C';
- } else if (this.id == 'buttonD') {
- 	answerChosen = 'D';
- } 
- if ((answerChosen == 'A') && (questionArray[index].flags[0] == true)) {
- 	answerCorrect();
- } else if (answerChosen == 'A') {
- 	answerWrong();
- }
- if ((answerChosen == 'B') && (questionArray[index].flags[1] == true)) {
- 	answerCorrect();
- } else if (answerChosen == 'B') {
- 	answerWrong();
- }
-if ((answerChosen == 'C') && (questionArray[index].flags[2] == true)) {
- 	answerCorrect();
- } else if (answerChosen == 'C') {
- 	answerWrong();
- }
-if ((answerChosen == 'D') && (questionArray[index].flags[3] == true)) {
- 	answerCorrect();
- } else if (answerChosen == 'D') {
- 	answerWrong();
- }
+    function timer() {
+        if (timeRemaining === 0) {
+            answered = true;
+            clearInterval(intervalID);
+            $('.question').text("THE CORRECT ANSWER IS: " + triviaGame[indexQandA].answer[correct]);
+            unAnswered();
+        } else if (answered === true) {
+            clearInterval(intervalID);
+        } else {
+            timeRemaining--;
+            $('.timeRemaining').text('YOU HAVE ' + timeRemaining + ' SECONDS TO CHOOSE');
+        }
+    }
 
- $(".question").text('');
- $("#buttonA").text('');
- $("#buttonB").text('');
- $("#buttonC").text('');
- $("#buttonD").text('');
- index++;
- if (index < questionArray.length) {
- 	loadQuestion(index);
- } else {
- 	$(".answerchoice").hide();
- 	showScore();
- }
-});
+    function correctAnswer() {
+        correctAnswers++;
+        $('.timeRemaining').text("YOU HAVE ANSWERED CORRECTLY!").css({
+            'color': '#3D414F'
+        });
+        resetRound();
+    }
 
+    function incorrectAnswer() {
+        incorrectAnswers++;
+        $('.timeRemaining').text("YOU HAVE ANSWERED INCORRECTLY!").css({
+            'color': '#3D414F'
+        });
+        resetRound();
 
-//	$('#start').click(countdownTimer.start);
+    }
+
+    function unAnswered() {
+        unansweredQuestions++;
+        $('.timeRemaining').text("YOU FAILED TO CHOOSE AN ANSWER").css({
+            'color': '#3D414F'
+        });
+        resetRound();
+    }
+
+    function resetRound() {
+        $('.answersAll').remove();
+        $('.answers').append('<img class=answerImage width="150" height="150" src="' + triviaGame[indexQandA].image + ' ">'); // adds answer image
+        indexQandA++; // increments index which will load next question when loadQandA() is called again
+        if (indexQandA < triviaGame.length) {
+            setTimeout(function () {
+                loadQandA();
+                $('.answerImage').remove();
+            }, 5000); // removes answer image from previous round
+        } else {
+            setTimeout(function () {
+                $('.question').remove();
+                $('.timeRemaining').remove();
+                $('.answerImage').remove();
+                $('.answers').append('<h4 class= answersAll end>CORRECT ANSWERS: ' + correctAnswers + '</h4>');
+                $('.answers').append('<h4 class= answersAll end>INCORRECT ANSWERS: ' + incorrectAnswers + '</h4>');
+                $('.answers').append('<h4 class= answersAll end>UNANSWERED QUESTIONS: ' + unansweredQuestions + '</h4>');
+                setTimeout(function () {
+                    location.reload();
+                }, 7000);
+            }, 5000);
+        }
+    };
+
+    $('.startButton').on("click", function () {
+        $('.startButton');
+        startGame();
+
+    });
+
 });
